@@ -6,17 +6,27 @@ export const badRequest = (res: Response, err: string) => {
     });
 }
 
-export const internalServerError = (res: Response, err: Error) =>
-    res.status(500).json({
-        err: err.message
-    })
+export const internalServerError = (res: Response, err: Error) => {
+    if (process.env.NODE_ENV === "development") {
+        res.status(500).json({
+            err: err.message,
+            stack: err.stack
+        });
+    } else {
+        res.status(500).json({
+            err: "Erro interno no servidor"
+        });
+    }
+};
 
 export const notFound = (res: Response, message: string) => {
     return res.status(404).json({ error: message });
 };
 
-export const ok = (res: Response) => { res.status(200);
+export const ok = (res: Response, message: string = "Operação bem-sucedida") => { 
+    res.status(200).json({ message });
 };
+
 
 export const validateNumber = (num: any): boolean => {
 
